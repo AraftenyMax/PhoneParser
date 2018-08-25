@@ -1,3 +1,4 @@
+using PhoneParser.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            CitrusParser parser = new CitrusParser();
+            parser.Parse();
             Console.ReadKey();
         }
     }
