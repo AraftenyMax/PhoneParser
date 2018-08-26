@@ -79,7 +79,7 @@ namespace PhoneParser.EF
         [StringLength(50)]
         public string Weight { get; set; }
 
-        [StringLength(50)]
+        [StringLength(256)]
         public string PhoneName { get; set; }
 
         [StringLength(50)]
@@ -90,5 +90,11 @@ namespace PhoneParser.EF
 
         [StringLength(50)]
         public string FrontalCamera { get; set; }
+
+        [StringLength(256)]
+        public string Url { get; set; }
+
+        [StringLength(50)]
+        public string Price { get; set; }
     }
 }

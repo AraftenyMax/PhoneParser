@@ -5,6 +5,7 @@ using System.Configuration;
 using PhoneParser.EF;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.IO;
 
 namespace PhoneParser.Parsers
 {
@@ -13,25 +14,24 @@ namespace PhoneParser.Parsers
         HtmlWeb Web;
         Phone phoneModel = new Phone();
         string Preffix = "Citrus";
+        string DomainName;
         string NoResultsId;
         string LinksSelector;
         int Page = 1;
-        List<string> ExcludeFields = new List<string>();
-        List<string> FindWithRawXPath = new List<string>();
-        List<Phone> PhonesSet = new List<Phone>();
+        bool Stop;
+        List<string> ExcludeFields = new List<string>();    
         Dictionary<string, string> NodesData = new Dictionary<string, string>();
-        Dictionary<string, string> PhoneData = new Dictionary<string, string>();
         string Url;
 
         public CitrusParser()
         {
             Console.WriteLine("Initializing CitrusParser");
             Web = new HtmlWeb();
-            FindWithRawXPath.AddRange(ConfigurationManager.AppSettings[Preffix + "FindWithRawXPath"].Split(','));
             ExcludeFields.AddRange(ConfigurationManager.AppSettings["ExcludeFields"].Split(','));
             Url = ConfigurationManager.AppSettings[Preffix + "Url"];
             NoResultsId = ConfigurationManager.AppSettings[Preffix + "NoResultsId"];
             LinksSelector = ConfigurationManager.AppSettings[Preffix + "DetailLink"];
+            DomainName = ConfigurationManager.AppSettings[Preffix + "Domain"];
             var props = phoneModel.GetType().GetProperties();
             foreach (var property in props)
             {
@@ -46,25 +46,52 @@ namespace PhoneParser.Parsers
         
         public void Parse()
         {
+            Random random = new Random();
             HtmlDocument page = Web.Load(String.Format(Url, Page));
-            while(page.DocumentNode.SelectSingleNode(NoResultsId).OuterLength == 0)
+            while(true)
             {
+                HtmlNodeCollection links = new HtmlNodeCollection(null);
                 Console.WriteLine($"Parsing {Page} Page");
-                HtmlNodeCollection links = page.DocumentNode.SelectNodes(LinksSelector);
-                foreach(HtmlNode link in links)
+                try
                 {
-                    ParseSingleItem(link.Attributes["href"].Value);
+                    links = page.DocumentNode.SelectNodes(LinksSelector);
+                    if (links == null)
+                        break;
                 }
-                Page++;
-                page = Web.Load(String.Format(Url, Page));
+                catch (Exception)
+                {
+                    Console.WriteLine("Seems to be all pages parsed");
+                    break;
+                }
+                finally
+                {
+                    List<Phone> phones = new List<Phone>();
+                    foreach (HtmlNode link in links)
+                    {
+                        Phone phone = ParseSingleItem(link.Attributes["href"].Value);
+                        phones.Add(phone);
+                        System.Threading.Thread.Sleep(random.Next(500, 1000));
+                    }
+                    Page++;
+                    page = Web.Load(String.Format(Url, Page));
+                    SaveParsedData(phones);
+                }
             }
-            SaveParsedData();
         }
 
-        public void ParseSingleItem(string url)
+        public Phone ParseSingleItem(string url)
         {
             Web = new HtmlWeb();
-            var htmlDoc = Web.Load(url);
+            HtmlDocument htmlDoc = null;
+            string phoneUrl = String.Format(DomainName, url);
+            try
+            {
+                htmlDoc = Web.Load(phoneUrl);
+            }
+            catch (IOException)
+            {
+                htmlDoc = Web.Load(phoneUrl);
+            }
             Phone phone = new Phone();
             foreach (KeyValuePair<string, string> Property in NodesData)
             {
@@ -72,26 +99,27 @@ namespace PhoneParser.Parsers
                 {
                     string data = "";
                     HtmlNode node = htmlDoc.DocumentNode.SelectSingleNode(NodesData[Property.Key]);
-                    if (FindWithRawXPath.Contains(Property.Key))
+                    if(node.ChildNodes.Count == 1)
                     {
                         data = node.InnerHtml;
                     }
                     else
                     {
-                        data = node.ParentNode.ParentNode.ChildNodes[2].InnerText;
+                        data = node.ParentNode.ParentNode.LastChild.InnerHtml;
                     }
                     phone.GetType().GetProperty(Property.Key).SetValue(phone, data, null);
-                    PhonesSet.Add(phone);
-                } catch(Exception ex)
+                } catch(Exception)
                 {
                     Console.WriteLine($"Oops! It seems to be unable to find element with such data: {Property.Key}");
                 }
             }
             phone.ShopName = Preffix;
+            phone.Url = phoneUrl;
             Console.WriteLine($"Parsed {phone.PhoneName}");
+            return phone;
         }
 
-        public void SaveParsedData()
+        public void SaveParsedData(List<Phone> PhonesSet)
         {
             using (PhoneModel context = new PhoneModel())
             {
