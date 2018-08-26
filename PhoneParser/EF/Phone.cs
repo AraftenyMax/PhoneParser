@@ -8,7 +8,6 @@ namespace PhoneParser.EF
 
     public partial class Phone
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [StringLength(50)]
@@ -59,7 +58,7 @@ namespace PhoneParser.EF
         [StringLength(50)]
         public string BatteryCapacity { get; set; }
 
-        [StringLength(50)]
+        [StringLength(1024)]
         public string StandaloneSpecs { get; set; }
 
         [StringLength(50)]
