@@ -12,6 +12,7 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
+            string url = "";
             AllegroParser p = new AllegroParser();
             Console.ReadKey();
         }

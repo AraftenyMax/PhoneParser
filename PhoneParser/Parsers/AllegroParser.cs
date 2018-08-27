@@ -12,8 +12,17 @@ namespace PhoneParser.Parsers
     {
         HtmlWeb Web = new HtmlWeb();
         string Preffix = "Allegro";
+        string Domain;
+        string LinksSelector;
+
         public AllegroParser()
         {
+
+        }
+
+        public bool IsUrlValid(string url)
+        {
+            return url.Contains("redirect=");
         }
 
         public void Parse()

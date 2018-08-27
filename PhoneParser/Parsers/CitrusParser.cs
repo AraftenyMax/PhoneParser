@@ -15,7 +15,6 @@ namespace PhoneParser.Parsers
         Phone phoneModel = new Phone();
         string Preffix = "Citrus";
         string DomainName;
-        string NoResultsId;
         string LinksSelector;
         int Page = 1;
         List<string> ExcludeFields = new List<string>();    
@@ -28,7 +27,6 @@ namespace PhoneParser.Parsers
             Web = new HtmlWeb();
             ExcludeFields.AddRange(ConfigurationManager.AppSettings["ExcludeFields"].Split(','));
             Url = ConfigurationManager.AppSettings[Preffix + "Url"];
-            NoResultsId = ConfigurationManager.AppSettings[Preffix + "NoResultsId"];
             LinksSelector = ConfigurationManager.AppSettings[Preffix + "DetailLink"];
             DomainName = ConfigurationManager.AppSettings[Preffix + "Domain"];
             var props = phoneModel.GetType().GetProperties();
