@@ -18,7 +18,6 @@ namespace PhoneParser.Parsers
         string NoResultsId;
         string LinksSelector;
         int Page = 1;
-        bool Stop;
         List<string> ExcludeFields = new List<string>();    
         Dictionary<string, string> NodesData = new Dictionary<string, string>();
         string Url;

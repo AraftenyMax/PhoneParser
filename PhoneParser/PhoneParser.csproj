@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="EF\Phone.cs" />
     <Compile Include="EF\PhoneModel.cs" />
+    <Compile Include="Parsers\AllegroParser.cs" />
     <Compile Include="Parsers\CitrusParser.cs" />
     <Compile Include="Parsers\IParser.cs" />
     <Compile Include="Program.cs" />

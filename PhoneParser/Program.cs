@@ -12,8 +12,7 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
-            CitrusParser parser = new CitrusParser();
-            parser.Parse();
+            AllegroParser p = new AllegroParser();
             Console.ReadKey();
         }
     }
