@@ -1,0 +1,22 @@
+{
+	"ScreenDiag": "//div[contains(., 'Przekątna ekranu:')]",
+	"ScreenResolution": "//div[contains(., 'Rozdzielczość ekranu (px):')]",
+	"MainCamera": "//div[contains(., 'Rozdzielczość aparatu tylnego:')]",
+	"ProcessorCores": "//div[contains(., 'Liczba rdzeni procesora:')]",
+	"ProcessorSpeed": "//div[contains(., 'Częstotliwość procesora:')]",
+	"RAM": "//div[contains(., 'Pamięć RAM:')]",
+	"InternalMem": "//div[contains(., 'Wbudowana pamięć:')]",
+	"MaxInternalMem": "//div[contains(., 'Maksymalna pojemność karty pamięci:')]",
+	"OS": "//div[contains(., 'Wersja systemu operacyjnego:')]",
+	"AccessTypes": "//div[contains(., 'Transmisja danych:')]",
+	"NavAbility": "//div[contains(., 'Nawigacja:')]",
+	"BatteryCapacity": "//div[contains(., 'Pojemność akumulatora:')]",
+	"BodyMaterial": "//div[contains(., 'Materiał:')]",
+	"Size": "//div[contains(., '{0}')],Szerokość produktu:,Wysokość produktu:,Głębokość produktu:",
+	"Weight": "//div[contains(., 'Waga:')]",
+	"PhoneName": "//h1[@class='m-heading m-heading--xs si-title']",
+	"FrontalCamera": "//div[contains(., 'Rozdzielczość aparatu przedniego:')]",
+	"DetailLink": "//h2[contains(@class, '_4462670 _7b0067f')]",
+	"Url": "https://allegro.pl/kategoria/smartfony-i-telefony-komorkowe-165?order=m&p={0}",
+	"Price": "//div[@class='m-price m-price--primary']"
+}

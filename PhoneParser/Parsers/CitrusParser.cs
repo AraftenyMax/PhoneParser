@@ -6,6 +6,7 @@ using PhoneParser.EF;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
+using PhoneParser.Utils;
 
 namespace PhoneParser.Parsers
 {
@@ -13,7 +14,7 @@ namespace PhoneParser.Parsers
     {
         HtmlWeb Web;
         Phone phoneModel = new Phone();
-        string Preffix = "Citrus";
+        string ShopName = "Citrus";
         string DomainName;
         string LinksSelector;
         int Page = 1;
@@ -25,19 +26,10 @@ namespace PhoneParser.Parsers
         {
             Console.WriteLine("Initializing CitrusParser");
             Web = new HtmlWeb();
-            ExcludeFields.AddRange(ConfigurationManager.AppSettings["ExcludeFields"].Split(','));
-            Url = ConfigurationManager.AppSettings[Preffix + "Url"];
-            LinksSelector = ConfigurationManager.AppSettings[Preffix + "DetailLink"];
-            DomainName = ConfigurationManager.AppSettings[Preffix + "Domain"];
-            var props = phoneModel.GetType().GetProperties();
-            foreach (var property in props)
-            {
-                if (!ExcludeFields.Contains(property.Name))
-                {
-                    string appSettingsName = Preffix + property.Name;
-                    NodesData[property.Name] = ConfigurationManager.AppSettings[appSettingsName];
-                }
-            }
+			NodesData = ConfigLoader.LoadConfig(ShopName);
+			Url = NodesData["Url"];
+            LinksSelector = NodesData["DetailLink"];
+            DomainName = NodesData["Domain"];
             Console.WriteLine("Initialization: success");
         }
         
@@ -110,7 +102,7 @@ namespace PhoneParser.Parsers
                     Console.WriteLine($"Oops! It seems to be unable to find element with such data: {Property.Key}");
                 }
             }
-            phone.ShopName = Preffix;
+            phone.ShopName = ShopName;
             phone.Url = phoneUrl;
             Console.WriteLine($"Parsed {phone.PhoneName}");
             return phone;

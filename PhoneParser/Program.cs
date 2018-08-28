@@ -1,5 +1,6 @@
 using PhoneParser.EF;
 using PhoneParser.Parsers;
+using PhoneParser.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
-            string url = "";
-            AllegroParser p = new AllegroParser();
+			AllegroParser p = new AllegroParser();
+			p.Parse();
             Console.ReadKey();
         }
     }
