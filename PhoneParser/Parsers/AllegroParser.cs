@@ -28,13 +28,14 @@ namespace PhoneParser.Parsers
 
         public bool IsUrlValid(string url)
         {
-            return url.Contains("redirect=");
+            return !url.Contains("redirect=");
         }
 
         public void Parse()
         {
 			while (true)
 			{
+				Console.WriteLine($"Parsing {Page} page");
 				List<Phone> phoneSet = new List<Phone>();
 				string url = String.Format(UrlTemplate, Page);
 				var htmlDoc = Web.Load(url);
@@ -46,23 +47,53 @@ namespace PhoneParser.Parsers
 					string phoneUrl = urlNode.SelectSingleNode("a").Attributes["href"].Value;
 					if (IsUrlValid(phoneUrl))
 					{
-						Phone p = ParseSingleItem(url);
+						Phone p = ParseSingleItem(phoneUrl);
 						phoneSet.Add(p);
 					}
 				}
 				SaveParsedData(phoneSet);
+				Page++;
 			}
         }
 
-		string getSize(HtmlDocument doc)
+		string GetSize(HtmlDocument doc)
 		{
-			List<string> configData = NodesData["Size"].Split(',').ToList();
-			List<string> xpaths = configData.GetRange(1, 3);
+			List<string> configData = NodesData["Size"].Split(';').ToList();
+			List<string> keywords = configData.GetRange(1, 3);
 			string template = configData[0];
-			string res = "";
-			foreach (string xpath in xpaths)
-				res += doc.DocumentNode.SelectSingleNode(xpath).ParentNode.ChildNodes[1].InnerText;
+			string res = "0x1x2 mm";
+			int counter = 0;
+			foreach (string keyword in keywords)
+			{
+				string xpath = String.Format(template, keyword);
+				try
+				{
+					var elem = doc.DocumentNode.SelectSingleNode(xpath)
+						.ParentNode.ChildNodes[1].InnerText.Replace(" mm", "").Trim();
+					res = res.Replace($"{counter}", elem);
+					counter++;
+				}
+				catch (Exception)
+				{
+					res = res.Replace($"{counter}", "unknown");
+				}
+				counter++;
+			}
 			return res;
+		}
+
+		string GetPrice(HtmlDocument doc)
+		{
+			var nodes = doc.DocumentNode.SelectSingleNode(NodesData["Price"])
+				.ChildNodes.ToList().GetRange(0, 2);
+			List<string> price_tokens = new List<string>();
+			foreach (var node in nodes) {
+				string data = node.InnerText;
+				price_tokens.Add(data);
+			}
+			string price = String.Join("", price_tokens).Replace(" ", "");
+			Console.WriteLine(price.Replace.Length);
+			return price;
 		}
 
 		Phone ParseSingleItem(string url)
@@ -71,14 +102,18 @@ namespace PhoneParser.Parsers
 			Phone phone = new Phone();
 			phone.Url = url;
 			phone.ShopName = ShopName;
-			phone.Size = getSize(htmlDoc);
+			phone.Size = GetSize(htmlDoc);
+			phone.Price = GetPrice(htmlDoc);
 			foreach(var prop in NodesData)
 			{
 				try
 				{
-					string data = htmlDoc.DocumentNode.SelectSingleNode(prop.Value).ParentNode.ChildNodes[1].InnerText;
+					string data = htmlDoc.DocumentNode.SelectSingleNode(prop.Value)
+						.ParentNode.ChildNodes[1].InnerText.Trim();
 					phone.GetType().GetProperty(prop.Key).SetValue(phone, data, null);
-				} catch(Exception) { }
+				} catch(Exception) {
+					//Console.WriteLine($"Unable to locate value for: {prop.Key}");
+				}
 			}
 			return phone;
 		}
