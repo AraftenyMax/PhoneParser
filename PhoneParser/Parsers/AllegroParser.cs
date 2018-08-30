@@ -92,7 +92,6 @@ namespace PhoneParser.Parsers
 				price_tokens.Add(data);
 			}
 			string price = String.Join("", price_tokens).Replace(" ", "");
-			Console.WriteLine(price.Replace.Length);
 			return price;
 		}
 
@@ -108,11 +107,13 @@ namespace PhoneParser.Parsers
 			{
 				try
 				{
+					if (NodesData["ExcludedFields"].Contains(prop.Key))
+						continue;
 					string data = htmlDoc.DocumentNode.SelectSingleNode(prop.Value)
 						.ParentNode.ChildNodes[1].InnerText.Trim();
 					phone.GetType().GetProperty(prop.Key).SetValue(phone, data, null);
 				} catch(Exception) {
-					//Console.WriteLine($"Unable to locate value for: {prop.Key}");
+					Console.WriteLine($"Unable to locate value for: {prop.Key}");
 				}
 			}
 			return phone;

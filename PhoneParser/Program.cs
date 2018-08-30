@@ -13,8 +13,6 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
-			AllegroParser p = new AllegroParser();
-			p.Parse();
             Console.ReadKey();
         }
     }

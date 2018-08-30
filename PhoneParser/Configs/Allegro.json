@@ -18,5 +18,6 @@
 	"FrontalCamera": "//div[contains(text(), 'Rozdzielczość aparatu przedniego:')]",
 	"DetailLink": "//h2[contains(@class, '_4462670 _7b0067f')]",
 	"Url": "https://allegro.pl/kategoria/smartfony-i-telefony-komorkowe-165?order=m&p={0}",
-	"Price": "//div[@class='m-price m-price--primary']"
+	"Price": "//div[@class='m-price m-price--primary']",
+	"ExtraFields": "['Price', 'Size', 'Url', 'DetailLink']"
 }
