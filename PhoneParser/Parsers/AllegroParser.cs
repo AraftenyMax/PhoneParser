@@ -75,7 +75,7 @@ namespace PhoneParser.Parsers
 				}
 				catch (Exception)
 				{
-					res = res.Replace($"{counter}", "unknown");
+					res = res.Replace($"{counter}", "?");
 				}
 				counter++;
 			}
