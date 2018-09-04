@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.IO;
 using PhoneParser.Utils;
+using System.Linq;
 
 namespace PhoneParser.Parsers
 {
@@ -35,6 +36,7 @@ namespace PhoneParser.Parsers
         
         public void Parse()
         {
+			Page = 1;
             Random random = new Random();
             HtmlDocument page = Web.Load(String.Format(Url, Page));
             while(true)
@@ -108,7 +110,7 @@ namespace PhoneParser.Parsers
             return phone;
         }
 
-        public void SaveParsedData(List<Phone> PhonesSet)
+        void SaveParsedData(List<Phone> PhonesSet)
         {
             using (PhoneModel context = new PhoneModel())
             {
@@ -118,5 +120,39 @@ namespace PhoneParser.Parsers
                 Console.WriteLine($"Successfully saved {PhonesSet.Count} items...");
             }
         }
+
+		public void Check()
+		{
+			Page = 1;
+			List<Phone> Phones = new List<Phone>();
+			using (PhoneModel DBcontext = new PhoneModel()) { 
+			while (true)
+			{
+				HtmlNodeCollection links = null;
+				string url = String.Format(Url, Page);
+				var page = Web.Load(url);
+				try
+				{
+					links = page.DocumentNode.SelectNodes(LinksSelector);
+				}
+				catch (Exception) { break; }
+					foreach (var node in links)
+					{
+						string phoneName = node.Attributes["title"].Value;
+						var phone = DBcontext.Phones
+							.FirstOrDefault(e => e.ShopName == ShopName && e.PhoneName == phoneName);
+						if (phone == null)
+						{
+							string phoneUrl = node.Attributes["href"].Value;
+							Phone p = ParseSingleItem(phoneUrl);
+							Phones.Add(p);
+						}
+					}
+					Page++;
+					SaveParsedData(Phones);
+					Phones.Clear();
+				}
+			}
+		}
     }
 }

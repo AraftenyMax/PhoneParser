@@ -1,3 +1,4 @@
+using HtmlAgilityPack;
 using PhoneParser.EF;
 using PhoneParser.Parsers;
 using PhoneParser.Utils;
@@ -13,7 +14,9 @@ namespace PhoneParser
     {
         static void Main(string[] args)
         {
-            Console.ReadKey();
+			CitrusParser citrusParser = new CitrusParser();
+			citrusParser.Check();
+			Console.ReadKey();
         }
     }
 }

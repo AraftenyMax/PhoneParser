@@ -15,12 +15,12 @@
 	"ProcessorSpeed": "Frekvence procesoru ",
 	"BatteryCapacity": "Kapacita baterie",
 	"BodyMaterial": "Materiál těla ",
-	"AccessTypes": "['3G', 'LTE']",
+	"AccessTypes": "3G,LTE",
 	"SIMQuantity": "Dual SIM",
 	"RAM": "Operační paměť ",
 	"OS": "Operační systém ",
 	"ProcessorName": "Typ procesoru ",
-	"Size": "['Výška' , 'Šířka', 'Hloubka']",
-	"Yes/No": "['ano', 'ne']",
-	"ExcludeFields": "['DetailLink', 'Domain', 'DataTemplate', 'Size', 'AccessTypes', 'Url', 'Price', 'PhoneName']"
+	"Size": "Výška,Šířka,Hloubka",
+	"Yes/No": "ano,ne",
+	"ExcludedFields": "DetailLink,Domain,DataTemplate,Size,AccessTypes,Url,Price,PhoneName"
 }
