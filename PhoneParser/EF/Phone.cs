@@ -1,4 +1,4 @@
-namespace PhoneParser.EF
+namespace Parsers.EF
 {
     using System;
     using System.Collections.Generic;

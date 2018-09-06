@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhoneParser.Parsers
+namespace PhoneParser.Configs
 {
-    interface IParser
-    {
-        void Parse();
-    }
+	class ConfigModel
+	{
+	}
 }

@@ -1,21 +1,19 @@
 using HtmlAgilityPack;
-using PhoneParser.EF;
-using PhoneParser.Parsers;
-using PhoneParser.Utils;
+using Parsers.EF;
+using Parsers.PhoneParser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhoneParser
+namespace Parsers
 {
     class Program
     {
         static void Main(string[] args)
         {
-			CitrusParser citrusParser = new CitrusParser();
-			citrusParser.Check();
+			PhonesParser parser = new PhonesParser();
 			Console.ReadKey();
         }
     }
