@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Parsers.EF;
+using PhoneParser.Parsers;
 
 namespace Parsers.PhoneParser
 {
 	class PhonesParser
 	{
-		dynamic Config;
+		ConfigModel Config;
 		HtmlWeb Browser = new HtmlWeb();
 		string DetailLinkSelector;
 		string DetailUrlTemplate;
@@ -26,7 +27,7 @@ namespace Parsers.PhoneParser
 		public void CheckShop(string shopName)
 		{
 			int Page = 1;
-			LoadConfig("ShopName");
+			LoadConfig(shopName);
 			while (true)
 			{
 				string url = String.Format(PageUrlTemplate, Page);
@@ -44,15 +45,21 @@ namespace Parsers.PhoneParser
 				List<Phone> phones = new List<Phone>();
 				foreach(var node in linkNodes)
 				{
+					string phoneName = "";
 					string detailLink = ResolveDetailUrl(node.Attributes["href"].Value);
-					string phoneName = html.DocumentNode.SelectNodes(PhoneNameSelector)[phoneNumber].InnerText;
+					try {
+						phoneName = html.DocumentNode.SelectNodes(PhoneNameSelector)[phoneNumber].InnerText;
+					} catch (Exception)
+					{
+						SaveParsedData(phones);
+						break;
+					}
 					if(!CurrentlyInDB(phoneName, shopName))
 					{
 						Phone p = ParseSingleItem(detailLink);
 						phones.Add(p);
 					}
 					phoneNumber++;
-					SaveParsedData(phones);
 				}
 			}
 		}
@@ -79,14 +86,15 @@ namespace Parsers.PhoneParser
 
 		void ParseSimpleSection(HtmlDocument html, Phone phone)
 		{
-			if (Config.SimpleXPathSelectors)
+			if (Config.SingleXPathSelectors != null)
 			{
-				foreach(var prop in Config.SimpleXPathSelectors)
+				foreach(var prop in Config.SingleXPathSelectors)
 				{
 					try
 					{
-						string xpath = Config.SimpleXPathSelectors[prop.Key];
+						string xpath = Config.SingleXPathSelectors[prop.Key];
 						string data = html.DocumentNode.SelectSingleNode(xpath).InnerText;
+						Console.WriteLine(data);
 						phone.GetType().GetProperty(prop.Key).SetValue(phone, data, null);
 					}
 					catch (Exception) { }
@@ -98,7 +106,7 @@ namespace Parsers.PhoneParser
 		{
 			try
 			{
-				return String.Format(Config.UrlResolveRules.DetailLinkTemplate, detailLink);
+				return String.Format(Config.UrlResolveRules["DetailLinkTemplate"], detailLink);
 			}
 			catch (Exception)
 			{
@@ -111,12 +119,12 @@ namespace Parsers.PhoneParser
 			string path = $"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName}\\" +
 				$"Configs\\{shopName}.json";
 			string json = File.ReadAllText(path);
-			Config = JsonConvert.DeserializeObject(json);
+			Config = JsonConvert.DeserializeObject<ConfigModel>(json);
 
-			DetailLinkSelector = Config.UrlResolveRules.DetailLinkSelector;
-			DetailUrlTemplate = Config.UrlResolveRules.DetailUrlTemplate;
-			PageUrlTemplate = Config.UrlResolveRules.PageUrlTemplate;
-			PhoneNameSelector = Config.CheckXpaths.PhoneNameSelector;
+			DetailLinkSelector = Config.CheckXpaths["DetailLinkSelector"];
+			DetailUrlTemplate = Config.UrlResolveRules["DetailLinkTemplate"];
+			PageUrlTemplate = Config.UrlResolveRules["PageLinkTemplate"];
+			PhoneNameSelector = Config.CheckXpaths["PhoneNameSelector"];
 		}
 
 		void SaveParsedData(List<Phone> phones)

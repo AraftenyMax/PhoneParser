@@ -78,6 +78,7 @@
     <Compile Include="Configs\ConfigModel.cs" />
     <Compile Include="EF\Phone.cs" />
     <Compile Include="EF\PhoneModel.cs" />
+    <Compile Include="Parsers\ConfigModel.cs" />
     <Compile Include="Parsers\PhoneParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

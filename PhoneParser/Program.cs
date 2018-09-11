@@ -14,6 +14,7 @@ namespace Parsers
         static void Main(string[] args)
         {
 			PhonesParser parser = new PhonesParser();
+			parser.CheckShop("Citrus");
 			Console.ReadKey();
         }
     }

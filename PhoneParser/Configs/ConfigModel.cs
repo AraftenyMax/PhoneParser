@@ -8,5 +8,6 @@ namespace PhoneParser.Configs
 {
 	class ConfigModel
 	{
+
 	}
 }
