@@ -152,7 +152,7 @@ namespace Parsers.PhoneParser
 			DetailUrlTemplate = Config.UrlResolveRules["DetailLinkTemplate"];
 			PageUrlTemplate = Config.UrlResolveRules["PageLinkTemplate"];
 			PhoneNameSelector = Config.CheckXpaths["PhoneNameSelector"];
-			Log.WriteToLog(LogManager.Messages["ShopParseInit"], shopName);
+			Log.WriteToLog(LogManager.Messages["ShopParserInit"], shopName);
 		}
 
 		void SaveParsedData(List<Phone> phones)

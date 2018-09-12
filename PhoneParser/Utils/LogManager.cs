@@ -9,15 +9,14 @@ namespace PhoneParser.Utils
 {
 	class LogManager
 	{
-		StreamWriter Writer;
-
+		TextWriter Writer;
 		public LogManager()
 		{
 			Writer = new StreamWriter(Path);
 		}
 		public string ShopName { get; set; }
 		string Path = $"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName}\\" +
-				$"Configs\\{DateTime.Now}.txt";
+				$"Logs\\{DateTime.Now.ToString("MM-dd-yyyy-hh-mm-ss")}.txt";
 		public static Dictionary<string, string> Messages = new Dictionary<string, string>
 		{
 			{"NewItemFound","New item with name {0} is found!"},
