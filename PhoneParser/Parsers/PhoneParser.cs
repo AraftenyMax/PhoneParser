@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Parsers.EF;
 using PhoneParser.Parsers;
+using PhoneParser.Utils;
+using System.Threading;
 
 namespace Parsers.PhoneParser
 {
@@ -15,6 +17,8 @@ namespace Parsers.PhoneParser
 	{
 		ConfigModel Config;
 		HtmlWeb Browser = new HtmlWeb();
+		LogManager Log = new LogManager();
+		Random SleepPeeker = new Random();
 		string DetailLinkSelector;
 		string DetailUrlTemplate;
 		string PageUrlTemplate;
@@ -24,6 +28,26 @@ namespace Parsers.PhoneParser
 		{
 		}
 
+		HtmlDocument GetPage(string url)
+		{
+			HtmlDocument page;
+			while (true)
+			{
+				try
+				{
+					page = Browser.Load(url);
+				}
+				catch (Exception)
+				{
+					Log.WriteToLog(LogManager.Messages["CannotReceivePage"], url);
+					Thread.Sleep(SleepPeeker.Next(1000, 2000));
+					continue;
+				}
+				break;
+			}
+			return page;
+		}
+
 		public void CheckShop(string shopName)
 		{
 			int Page = 1;
@@ -31,7 +55,7 @@ namespace Parsers.PhoneParser
 			while (true)
 			{
 				string url = String.Format(PageUrlTemplate, Page);
-				HtmlDocument html = Browser.Load(url);
+				HtmlDocument html = GetPage(url);
 				HtmlNodeCollection linkNodes = new HtmlNodeCollection(null);
 				try
 				{
@@ -51,6 +75,7 @@ namespace Parsers.PhoneParser
 						phoneName = html.DocumentNode.SelectNodes(PhoneNameSelector)[phoneNumber].InnerText;
 					} catch (Exception)
 					{
+						Log.WriteToLog(LogManager.Messages["ParserFinish"]);
 						SaveParsedData(phones);
 						break;
 					}
@@ -79,7 +104,7 @@ namespace Parsers.PhoneParser
 		Phone ParseSingleItem(string url)
 		{
 			Phone p = new Phone();
-			HtmlDocument html = Browser.Load(url);
+			HtmlDocument html = GetPage(url);
 			ParseSimpleSection(html, p);
 			return p;
 		}
@@ -94,10 +119,12 @@ namespace Parsers.PhoneParser
 					{
 						string xpath = Config.SingleXPathSelectors[prop.Key];
 						string data = html.DocumentNode.SelectSingleNode(xpath).InnerText;
-						Console.WriteLine(data);
 						phone.GetType().GetProperty(prop.Key).SetValue(phone, data, null);
 					}
-					catch (Exception) { }
+					catch (Exception e)
+					{
+						Log.WriteToLog(LogManager.Messages["ExceptionOccurred"], e.Message);
+					}
 				}
 			}
 		}
@@ -125,10 +152,12 @@ namespace Parsers.PhoneParser
 			DetailUrlTemplate = Config.UrlResolveRules["DetailLinkTemplate"];
 			PageUrlTemplate = Config.UrlResolveRules["PageLinkTemplate"];
 			PhoneNameSelector = Config.CheckXpaths["PhoneNameSelector"];
+			Log.WriteToLog(LogManager.Messages["ShopParseInit"], shopName);
 		}
 
 		void SaveParsedData(List<Phone> phones)
 		{
+			Log.WriteToLog(LogManager.Messages["SavingParsedData"]);
 			using(PhoneModel context = new PhoneModel())
 			{
 				try
@@ -138,6 +167,7 @@ namespace Parsers.PhoneParser
 				}
 				catch (Exception) { }
 			}
+			Log.WriteToLog(LogManager.Messages["SaveDataSuccess"]);
 		}
 	}
 }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PhoneParser.Configs
+namespace PhoneParser.Utils
 {
-	class ConfigModel
+	class ReportManager
 	{
-
 	}
 }

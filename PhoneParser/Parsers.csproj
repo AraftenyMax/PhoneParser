@@ -82,6 +82,8 @@
     <Compile Include="Parsers\PhoneParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\LogManager.cs" />
+    <Compile Include="Utils\ReportManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -94,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logs\" />
-    <Folder Include="Utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
