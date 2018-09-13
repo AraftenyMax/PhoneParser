@@ -8,8 +8,8 @@ namespace PhoneParser.Parsers
 {
 	class ComplicatedXpathSelector
 	{
-		string ResultFormat;
-		List<string> XPaths;
+		public string ResultFormat;
+		public List<string> XPaths;
 	}
 
 	class ConfigModel

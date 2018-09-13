@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Parsers.EF;
 using PhoneParser.Parsers;
 using PhoneParser.Utils;
@@ -118,12 +116,40 @@ namespace Parsers.PhoneParser
 					try
 					{
 						string xpath = Config.SingleXPathSelectors[prop.Key];
-						string data = html.DocumentNode.SelectSingleNode(xpath).InnerText;
+						string data = html.DocumentNode.SelectSingleNode(xpath).InnerText.Trim();
 						phone.GetType().GetProperty(prop.Key).SetValue(phone, data, null);
 					}
 					catch (Exception e)
 					{
 						Log.WriteToLog(LogManager.Messages["ExceptionOccurred"], e.Message);
+					}
+				}
+			}
+		}
+
+		void ParseComplicatedSection(Phone p, HtmlDocument page)
+		{
+			if (Config.ComplicatedXPathSelectors != null)
+			{
+				foreach(var prop in Config.ComplicatedXPathSelectors)
+				{
+					foreach(ComplicatedXpathSelector selector in prop.Value)
+					{
+						List<object> data = new List<object>();
+						foreach (string xpath in selector.XPaths)
+						{
+							try
+							{
+								data.Add(page.DocumentNode.SelectSingleNode(xpath).InnerText.Trim());
+							}
+							catch(Exception e)
+							{
+								Log.WriteToLog(LogManager.Messages["ExceptionOccurred"], e.Message);
+								continue;
+							}
+						}
+						string parsedData = String.Format(selector.ResultFormat, data.ToArray());
+						p.GetType().GetProperty(prop.Key).SetValue(p, parsedData, null);
 					}
 				}
 			}

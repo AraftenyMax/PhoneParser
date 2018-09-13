@@ -7,25 +7,32 @@
 		"PageLinkTemplate": "https://allegro.pl/kategoria/smartfony-i-telefony-komorkowe-165?order=m&p={0}"
 	},
 	"SingleXPathSelectors": {
-		"ScreenDiag": "//div[contains(text(), 'Przekątna ekranu:')]",
-		"ScreenResolution": "//div[contains(text(), 'Rozdzielczość ekranu (px):')]",
-		"MainCamera": "//div[contains(text(), 'Rozdzielczość aparatu tylnego:')]",
-		"ProcessorCores": "//div[contains(text(), 'Liczba rdzeni procesora:')]",
-		"ProcessorSpeed": "//div[contains(text(), 'Częstotliwość procesora:')]",
-		"RAM": "//div[contains(text(), 'Pamięć RAM:')]",
-		"InternalMem": "//div[contains(text(), 'Wbudowana pamięć:')]",
-		"MaxInternalMem": "//div[contains(text(), 'Maksymalna pojemność karty pamięci:')]",
-		"OS": "//div[contains(text(), 'Wersja systemu operacyjnego:')]",
-		"AccessTypes": "//div[contains(text(), 'Transmisja danych:')]",
-		"NavAbility": "//div[contains(text(), 'Nawigacja:')]",
-		"BatteryCapacity": "//div[contains(text(), 'Pojemność akumulatora:')]",
-		"BodyMaterial": "//div[contains(text(), 'Materiał:')]",
-		"Weight": "//div[contains(text(), 'Waga:')]",
-		"PhoneName": "//h1[@class='m-heading m-heading--xs si-title']",
-		"FrontalCamera": "//div[contains(text(), 'Rozdzielczość aparatu przedniego:')]",
-		"Price": "//div[@class='m-price m-price--primary']"
+		"ScreenDiag": "//div[contains(text(), 'Przekątna ekranu:')]/following::div[1]",
+		"ScreenResolution": "//div[contains(text(), 'Rozdzielczość ekranu (px):')]/following::div[1]",
+		"MainCamera": "//div[contains(text(), 'Rozdzielczość aparatu tylnego:')]/following::div[1]",
+		"ProcessorCores": "//div[contains(text(), 'Liczba rdzeni procesora:')]/following::div[1]",
+		"ProcessorSpeed": "//div[contains(text(), 'Częstotliwość procesora:')]/following::div[1]",
+		"RAM": "//div[contains(text(), 'Pamięć RAM:')]/following::div[1]",
+		"InternalMem": "//div[contains(text(), 'Wbudowana pamięć:')]/following::div[1]",
+		"MaxInternalMem": "//div[contains(text(), 'Maksymalna pojemność karty pamięci:')]/following::div[1]",
+		"OS": "//div[contains(text(), 'Wersja systemu operacyjnego:')]/following::div[1]",
+		"AccessTypes": "//div[contains(text(), 'Transmisja danych:')]/following::div[1]",
+		"NavAbility": "//div[contains(text(), 'Nawigacja:')]/following::div[1]",
+		"BatteryCapacity": "//div[contains(text(), 'Pojemność akumulatora:')]/following::div[1]",
+		"BodyMaterial": "//div[contains(text(), 'Materiał:')]/following::div[1]",
+		"Weight": "//div[contains(text(), 'Waga:')]/following::div[1]",
+		"PhoneName": "//h1[@class='m-heading m-heading--xs si-title']/following::div[1]",
+		"FrontalCamera": "//div[contains(text(), 'Rozdzielczość aparatu przedniego:')]/following::div[1]",
+		"Price": "//div[@class='m-price m-price--primary']/following::div[1]"
 	},
 	"ComplicatedXPathSelectors": {
-		"Size": "//div[contains(@class, 'a853916b') and contains(., '{0}')];Szerokość produktu:;Wysokość produktu:;Głębokość produktu:"
+			"Size": {
+							"XPaths": [
+								"//div[contains(@class, 'a853916b') and contains(., 'Szerokość produktu:')]",
+								"//div[contains(@class, 'a853916b') and contains(., 'Wysokość produktu:')]",
+								"//div[contains(@class, 'a853916b') and contains(., 'Głębokość produktu:')]"
+							],
+							"ResultFormat": "{0}x{1}x{2}"
+			}
 	}
 	}
