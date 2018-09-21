@@ -1,7 +1,7 @@
 {
 	"CheckXpaths": {
-		"DetailLinkSelector": "//h2[contains(@class, '_4462670')]",
-		"PhoneNameSelector": "//h2[contains(@class, '_4462670')]//a/@href"
+		"DetailLinkSelector": "//h2[contains(@class, '_4462670')]//a",
+		"PhoneNameSelector": "//h2[contains(@class, '_4462670')]//a/text()"
 	},
 	"UrlResolveRules": {
 		"PageLinkTemplate": "https://allegro.pl/kategoria/smartfony-i-telefony-komorkowe-165?order=m&p={0}"
@@ -28,9 +28,9 @@
 	"ComplicatedXPathSelectors": {
 			"Size": {
 							"XPaths": [
-								"//div[contains(@class, 'a853916b') and contains(., 'Szerokość produktu:')]",
-								"//div[contains(@class, 'a853916b') and contains(., 'Wysokość produktu:')]",
-								"//div[contains(@class, 'a853916b') and contains(., 'Głębokość produktu:')]"
+								"//div[contains(@class, 'a853916b') and contains(., 'Szerokość produktu:')]/following::div[1]/text()",
+								"//div[contains(@class, 'a853916b') and contains(., 'Wysokość produktu:')]/following::div[1]/text()",
+								"//div[contains(@class, 'a853916b') and contains(., 'Głębokość produktu:')]/following::div[1]/text()"
 							],
 							"ResultFormat": "{0}x{1}x{2}"
 			}

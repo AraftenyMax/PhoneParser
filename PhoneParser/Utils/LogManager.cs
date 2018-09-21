@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace PhoneParser.Utils
 {
-	class LogManager
+	public class LogManager
 	{
-		TextWriter Writer;
+		StreamWriter Writer;
 		public LogManager()
 		{
-			Writer = new StreamWriter(Path);
+			Writer = new StreamWriter(Path); 
 		}
 		public string ShopName { get; set; }
 		string Path = $"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName}\\" +

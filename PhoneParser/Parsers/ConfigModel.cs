@@ -17,6 +17,6 @@ namespace PhoneParser.Parsers
 		public Dictionary<string, string> CheckXpaths { get; set; }
 		public Dictionary<string, string> UrlResolveRules { get; set; }
 		public Dictionary<string, string> SingleXPathSelectors { get; set; }
-		public Dictionary<string, List<ComplicatedXpathSelector>> ComplicatedXPathSelectors {get;set;}
+		public Dictionary<string, ComplicatedXpathSelector> ComplicatedXPathSelectors {get;set;}
 	}
 }

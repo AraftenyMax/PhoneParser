@@ -11,9 +11,9 @@ using System.Threading;
 
 namespace Parsers.PhoneParser
 {
-	class PhonesParser
+	public class PhonesParser
 	{
-		ConfigModel Config;
+		public ConfigModel Config;
 		HtmlWeb Browser = new HtmlWeb();
 		LogManager Log = new LogManager();
 		Random SleepPeeker = new Random();
@@ -26,7 +26,7 @@ namespace Parsers.PhoneParser
 		{
 		}
 
-		HtmlDocument GetPage(string url)
+		public HtmlDocument GetPage(string url)
 		{
 			HtmlDocument page;
 			while (true)
@@ -87,27 +87,28 @@ namespace Parsers.PhoneParser
 			}
 		}
 
-		bool CurrentlyInDB(string phoneName, string shopName)
+		public bool CurrentlyInDB(string phoneName, string shopName)
 		{
 			bool exists;
 			using (PhoneModel context = new PhoneModel())
 			{
 				Phone p = context.Phones.FirstOrDefault(e => e.PhoneName == phoneName && e.ShopName == shopName);
-				exists = p == null ? true : false;
+				exists = p == null ? false : true;
 			}
 			return exists;
 		}
 
 
-		Phone ParseSingleItem(string url)
+		public Phone ParseSingleItem(string url)
 		{
 			Phone p = new Phone();
 			HtmlDocument html = GetPage(url);
 			ParseSimpleSection(html, p);
+			ParseComplicatedSection(html, p);
 			return p;
 		}
 
-		void ParseSimpleSection(HtmlDocument html, Phone phone)
+		public void ParseSimpleSection(HtmlDocument html, Phone phone)
 		{
 			if (Config.SingleXPathSelectors != null)
 			{
@@ -127,35 +128,35 @@ namespace Parsers.PhoneParser
 			}
 		}
 
-		void ParseComplicatedSection(Phone p, HtmlDocument page)
+		void ParseComplicatedSection(HtmlDocument page, Phone p)
 		{
 			if (Config.ComplicatedXPathSelectors != null)
 			{
-				foreach(var prop in Config.ComplicatedXPathSelectors)
+				foreach (var prop in Config.ComplicatedXPathSelectors)
 				{
-					foreach(ComplicatedXpathSelector selector in prop.Value)
+					string resFormat = "";
+					List<object> data = new List<object>();
+					foreach (string xpath in prop.Value.XPaths)
 					{
-						List<object> data = new List<object>();
-						foreach (string xpath in selector.XPaths)
+						try
 						{
-							try
-							{
-								data.Add(page.DocumentNode.SelectSingleNode(xpath).InnerText.Trim());
-							}
-							catch(Exception e)
-							{
-								Log.WriteToLog(LogManager.Messages["ExceptionOccurred"], e.Message);
-								continue;
-							}
+							if (resFormat != "")
+								resFormat = prop.Value.ResultFormat;
+							data.Add(page.DocumentNode.SelectSingleNode(xpath).InnerText.Trim());
 						}
-						string parsedData = String.Format(selector.ResultFormat, data.ToArray());
-						p.GetType().GetProperty(prop.Key).SetValue(p, parsedData, null);
+						catch (Exception e)
+						{
+							Log.WriteToLog(LogManager.Messages["ExceptionOccurred"], e.Message);
+							continue;
+						}
 					}
+					string parsedData = String.Format(resFormat, data.ToArray());
+					p.GetType().GetProperty(prop.Key).SetValue(p, parsedData, null);
 				}
 			}
 		}
 
-		string ResolveDetailUrl(string detailLink)
+		public string ResolveDetailUrl(string detailLink)
 		{
 			try
 			{
@@ -167,21 +168,21 @@ namespace Parsers.PhoneParser
 			}
 		}
 
-		void LoadConfig(string shopName)
+		public void LoadConfig(string shopName)
 		{
 			string path = $"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName}\\" +
 				$"Configs\\{shopName}.json";
 			string json = File.ReadAllText(path);
 			Config = JsonConvert.DeserializeObject<ConfigModel>(json);
 
-			DetailLinkSelector = Config.CheckXpaths["DetailLinkSelector"];
-			DetailUrlTemplate = Config.UrlResolveRules["DetailLinkTemplate"];
-			PageUrlTemplate = Config.UrlResolveRules["PageLinkTemplate"];
-			PhoneNameSelector = Config.CheckXpaths["PhoneNameSelector"];
+			DetailLinkSelector = Config.CheckXpaths.TryGetValue("DetailLinkSelector", out string a) ? a : "";
+			DetailUrlTemplate = Config.UrlResolveRules.TryGetValue("DetailLinkTemplate", out string b) ? b : "";
+			PageUrlTemplate = Config.UrlResolveRules.TryGetValue("PageLinkTemplate", out string c) ? c : "";
+			PhoneNameSelector = Config.CheckXpaths.TryGetValue("PhoneNameSelector", out string d) ? d : "";
 			Log.WriteToLog(LogManager.Messages["ShopParserInit"], shopName);
 		}
 
-		void SaveParsedData(List<Phone> phones)
+		public void SaveParsedData(List<Phone> phones)
 		{
 			Log.WriteToLog(LogManager.Messages["SavingParsedData"]);
 			using(PhoneModel context = new PhoneModel())
